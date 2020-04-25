@@ -564,5 +564,5 @@ sapply(seq(2,12), number_of_options)
 </code>
 
 Based on the results, the minimum number of options guaranteeing more than 365 combinations is
-6, when the combinations will be 378.
+7, when the combinations will be 378.
 </blockquote>
