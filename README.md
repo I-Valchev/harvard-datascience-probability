@@ -291,7 +291,8 @@ mean(celtic_wins)
 
 ## Section 1: Addition Rule and Monty Hall
 
-### Addition Rule
+### Theory
+#### Addition Rule
 
 The addition rule states that the probability of event  𝐴  or event  𝐵  happening is the probability of event  𝐴  plus the probability of event  𝐵  minus the probability of both events  𝐴  and  𝐵  happening together.
 
@@ -300,3 +301,268 @@ Pr(𝐴 or 𝐵)=Pr(𝐴)+Pr(𝐵)−Pr(𝐴 and 𝐵)
 ```
 
 Note that  (𝐴 or 𝐵)  is equivalent to  (𝐴|𝐵) .
+
+#### Monty Hall (3 doors) problem
+
+Monte Carlo simulations can be used to simulate random outcomes, which makes them useful when exploring ambiguous or less intuitive problems like the Monty Hall problem.
+In the Monty Hall problem, contestants choose one of three doors that may contain a prize. Then, one of the doors that was not chosen by the contestant and does not contain a prize is revealed. The contestant can then choose whether to stick with the original choice or switch to the remaining unopened door.
+Although it may seem intuitively like the contestant has a 1 in 2 chance of winning regardless of whether they stick or switch, Monte Carlo simulations demonstrate that the actual probability of winning is 1 in 3 with the stick strategy and 2 in 3 with the switch strategy.
+
+### Exercises
+
+#### The Cavs and the Warriors
+
+Two teams, say the Cavs and the Warriors, are playing a seven game championship series. The first to win four games wins the series. The teams are equally good, so they each have a 50-50 chance of winning each game.
+
+If the Cavs lose the first game, what is the probability that they win the series?
+
+
+<blockquote>
+Answer:
+
+<code>\# Assign a variable 'n' as the number of remaining games.
+n <- 6
+
+\# Assign a variable `outcomes` as a vector of possible game outcomes, where 0 indicates a loss and 1 indicates a win for the Cavs.
+outcomes <- c(0, 1)
+
+\# Assign a variable `l` to a list of all possible outcomes in all remaining games. Use the `rep` function on `list(outcomes)` to create list of length `n`.
+l <- rep(list(outcomes), n)
+
+\# Create a data frame named 'possibilities' that contains all combinations of possible outcomes for the remaining games.
+possibilities <- expand.grid(l)
+
+\# Create a vector named 'results' that indicates whether each row in the data frame 'possibilities' contains enough wins for the Cavs to win the series.
+results <- c(rowSums(possibilities) >= 4)
+
+\# Calculate the proportion of 'results' in which the Cavs win the series. Print the outcome to the console.
+
+mean(results)
+</code>
+</blockquote>
+
+#### The Cavs and the Warriors - Monte Carlo
+
+Confirm the results of the previous question with a Monte Carlo simulation to estimate the probability of the Cavs winning the series after losing the first game.
+
+<blockquote>
+Answer:
+
+<code>\# The variable `B` specifies the number of times we want the simulation to run. Let's run the Monte Carlo simulation 10,000 times.
+B <- 10000
+
+\# Use the `set.seed` function to make sure your answer matches the expected result after random sampling.
+set.seed(1)
+
+\# Create an object called `results` that replicates for `B` iterations a simulated series and determines whether that series contains at least four wins for the Cavs.
+
+results <- replicate(B, {
+  outcomes <- sample(c(0,1), 6, replace=TRUE)
+  sum(outcomes) >= 4
+})
+
+\# Calculate the frequency out of `B` iterations that the Cavs won at least four games in the remainder of the series. Print your answer to the console.
+
+mean(results)
+</code>
+</blockquote>
+
+#### A and B play a series - part 1
+
+Two teams, A and B, are playing a seven series game series. Team A is better than team B and has a p>0.5 chance of winning each game.
+
+Use the function sapply to compute the probability, call it Pr of winning for p <- seq(0.5, 0.95, 0.025).
+
+<blockquote>
+Answer:
+
+<code>\# Let's assign the variable 'p' as the vector of probabilities that team A will win.
+p <- seq(0.5, 0.95, 0.025)
+
+\# Given a value 'p', the probability of winning the series for the underdog team B can be computed with the following function based on a Monte Carlo simulation:
+prob_win <- function(p){
+  B <- 10000
+  result <- replicate(B, {
+    b_win <- sample(c(1,0), 7, replace = TRUE, prob = c(1-p, p))
+    sum(b_win)>=4
+    })
+  mean(result)
+}
+
+\# Apply the 'prob_win' function across the vector of probabilities that team A will win to determine the probability that team B will win. Call this object 'Pr'.
+Pr <- sapply(p, prob_win)
+
+\# Plot the probability 'p' on the x-axis and 'Pr' on the y-axis.
+
+plot(p, Pr)
+</code>
+</blockquote>
+
+
+#### A and B play a series - part 2
+
+Repeat the previous exercise, but now keep the probability that team A wins fixed at p <- 0.75 and compute the probability for different series lengths. For example, wins in best of 1 game, 3 games, 5 games, and so on through a series that lasts 25 games.
+
+<blockquote>
+Answer:
+
+<code>\# Given a value 'p', the probability of winning the series for the underdog team B can be computed with the following function based on a Monte Carlo simulation:
+prob_win <- function(N, p=0.75){
+      B <- 10000
+      result <- replicate(B, {
+        b_win <- sample(c(1,0), N, replace = TRUE, prob = c(1-p, p))
+        sum(b_win)>=(N+1)/2
+        })
+      mean(result)
+    }
+
+\# Assign the variable 'N' as the vector of series lengths. Use only odd numbers ranging from 1 to 25 games.
+N <- seq(1, 25, 2)
+
+\# Apply the 'prob_win' function across the vector of series lengths to determine the probability that team B will win. Call this object `Pr`.
+Pr <- sapply(N, prob_win)
+
+\# Plot the number of games in the series 'N' on the x-axis and 'Pr' on the y-axis.
+
+plot(N, Pr)
+</code>
+</blockquote>
+
+## Section 1: Assessment
+
+### Olympic running
+
+#### How many different ways can the 3 medals be distributed across 8 runners?
+
+> Answer: In this case, order matters. Therefore, the result is `nrow(permutations(n=8, r=3)) = 356`
+
+#### How many different ways can the three medals be distributed among the 3 runners from Jamaica?
+
+> Answer: Similarly, order matters but this time just among 3 runners. `nrow(permutations(n=3, r=3)) = 6`
+
+#### What is the probability that all 3 medals are won by Jamaica?
+
+> Answer: Using the multiplication rule for dependent events, P(A and B and C) = Pr(C)×Pr((A and B)|C) = Pr(C)×Pr(B|A and C)×Pr(A|C) = (3/8)×(2/7)×(1/6) = 0.017
+
+#### Run a Monte Carlo simulation on this vector representing the countries of the 8 runners in this race:
+
+<blockquote>
+Answer:
+
+<code>runners <- c("Jamaica", "Jamaica", "Jamaica", "USA", "Ecuador", "Netherlands", "France", "South Africa")
+
+set.seed(1)
+
+results <- replicate(10000, {
+  winners <- sample(runners, 3)
+  winners[winners=='Jamaica']
+  length(winners[winners=='Jamaica']) == length(winners)
+})
+
+mean(results) # = 0.174
+</code>
+</blockquote>
+
+### Restaurant management
+
+Use the information below to answer the following five questions.
+
+A restaurant manager wants to advertise that his lunch special offers enough choices to eat different meals every day of the year. He doesn't think his current special actually allows that number of choices, but wants to change his special if needed to allow at least 365 choices.
+
+A meal at the restaurant includes 1 entree, 2 sides, and 1 drink. He currently offers a choice of 1 entree from a list of 6 options, a choice of 2 different sides from a list of 6 options, and a choice of 1 drink from a list of 2 options.
+
+#### How many meal combinations are possible with the current menu?
+
+<blockquote>
+Asnwer:
+
+Since the choices of entree (E), sides (S) and drinks (D) are independent of each other and order is irrelevant, the result (R) will be a combination of all E, S and D options.
+
+E = 6
+
+S = C(6, 2) = 15
+
+D = 2
+
+Therefore, R = 6×15×2 = 180
+</blockquote>
+
+#### The manager has one additional drink he could add to the special. How many combinations are possible if he expands his original special to 3 drink options?
+
+<blockquote>
+Answer:
+
+Following the same logic:
+
+E = 6
+
+S = C(6,2) = 15
+
+D = 3
+
+Therefore, R = 6×15×3 = 270
+</blockquote>
+
+#### The manager decides to add the third drink but needs to expand the number of options. The manager would prefer not to change his menu further and wants to know if he can meet his goal by letting customers choose more sides. How many meal combinations are there if customers can choose from 6 entrees, 3 drinks, and select 3 sides from the current 6 options?
+
+<blockquote>
+Answer:
+
+E = 6
+
+S = C(6,3) = 20
+
+D = 3
+
+Therefore, R = 6×20×3 = 360
+</blockquote>
+
+#### The manager is concerned that customers may not want 3 sides with their meal. He is willing to increase the number of entree choices instead, but if he adds too many expensive options it could eat into profits. He wants to know how many entree choices he would have to offer in order to meet his goal.
+
+- Write a function that takes a number of entree choices and returns the number of meal combinations possible given that number of entree options, 3 drink choices, and a selection of 2 sides from 6 options.
+
+- Use sapply() to apply the function to entree option counts ranging from 1 to 12.
+
+What is the minimum number of entree options required in order to generate more than 365 combinations
+
+<blockquote>
+Answer:
+
+<code>number_of_options = function(n) {
+  n\*15\*2
+}
+
+sapply(seq(1,12), number_of_options)
+
+\# Results are: [1]  45  90 135 180 225 270 315 360 405 450 495 540
+</code>
+
+Based on the results, the minimum number of options guaranteeing more than 365 combinations is
+9, when the combinations will be 405.
+</blockquote>
+
+
+#### The manager isn't sure he can afford to put that many entree choices on the lunch menu and thinks it would be cheaper for him to expand the number of sides. He wants to know how many sides he would have to offer to meet his goal of at least 365 combinations.
+
+- Write a function that takes a number of side choices and returns the number of meal combinations possible given 6 entree choices, 3 drink choices, and a selection of 2 sides from the specified number of side choices.
+
+- Use sapply() to apply the function to side counts ranging from 2 to 12.
+
+What is the minimum number of side options required in order to generate more than 365 combinations?
+
+<blockquote>
+Answer:
+
+<code>library('gtools')
+
+number_of_options = function(n) {
+  6 \* choose(n, 2) \* 3
+}
+
+sapply(seq(2,12), number_of_options)
+\# Results are: [1]   18   54  108  180  270  378  504  648  810  990 1188
+</code>
+
+Based on the results, the minimum number of options guaranteeing more than 365 combinations is
+6, when the combinations will be 378.
+</blockquote>
