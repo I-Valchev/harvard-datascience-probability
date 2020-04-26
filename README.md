@@ -1,10 +1,14 @@
-<div style="display: flex; padding: 20px; align-items: center;">
+<div style="display: flex; padding: 20px; align-items: center; justify-content: space-between;">
 <img
   src="https://www.harvard.edu/sites/all/themes/hedu2015/assets/img/logos/harvard-logo.png"
   alt="Harvard Logo"
   style="margin: 20px; width: 20%;"
 />
-<h1 style="margin: 5px; text-align: center;">Data Science Professional Certificate Program</h1>
+<div style="text-align: center;">
+  <h1 style="margin: 5px;">Data Science</h1>
+  <br/>
+  <h3 style="margin-top: 0px;"> Professional Certificate<br>Program</h3>
+</div>
 <img
   src="/ivo.jpg"
   alt="Harvard Logo"
