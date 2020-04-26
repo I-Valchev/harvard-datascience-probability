@@ -42,4 +42,4 @@ The standard program duration is 1.5 years and includes the following 9 courses:
 During the duration of the program I am logging the key learning points and my
 solutions to exercises for each course. These are available below:
 
-* [Probability](/probability/)
+* [Probability](/probability/README.md)
