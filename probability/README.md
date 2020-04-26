@@ -566,3 +566,275 @@ sapply(seq(2,12), number_of_options)
 Based on the results, the minimum number of options guaranteeing more than 365 combinations is
 7, when the combinations will be 378.
 </blockquote>
+
+### Esophageal cancer and alcohol/tobacco use, part 1
+
+Case-control studies help determine whether certain exposures are associated with outcomes such as developing cancer. The built-in dataset esoph contains data from a case-control study in France comparing people with esophageal cancer (cases, counted in ncases) to people without esophageal cancer (controls, counted in ncontrols) that are carefully matched on a variety of demographic and medical characteristics. The study compares alcohol intake in grams per day (alcgp) and tobacco intake in grams per day (tobgp) across cases and controls grouped by age range (agegp).
+
+The dataset is available in base R and can be called with the variable name esoph:
+```
+head(esoph)
+```
+
+You will be using this dataset to answer the following four multi-part questions (Questions 3-6).
+
+You may wish to use the tidyverse package:
+```
+library(tidyverse)
+```
+
+The following three parts have you explore some basic characteristics of the dataset.
+
+Each row contains one group of the experiment. Each group has a different combination of age, alcohol consumption, and tobacco consumption. The number of cancer cases and number of controls (individuals without cancer) are reported for each group.
+
+#### How many groups are in the study?
+
+<blockquote>
+Answer: The number of rows in the esoph vector:
+
+<code>nrow(esoph) \# 88
+</code>
+</blockquote>
+
+#### How many cases are there?
+
+Save this value as all_cases for later problems.
+
+<blockquote>
+Answer:
+
+<code>all_cases <- sum(esoph[,'ncases'])
+
+all_cases # 200
+</code>
+</blockquote>
+
+#### How many controls are there?
+
+Save this value as all_controls for later problems.
+
+<blockquote>
+Answer:
+
+<code>all_controls <- sum(esoph[,'ncontrols'])
+
+all_controls \# 975
+</code>
+</blockquote>
+
+#### What is the probability that a subject in the highest alcohol consumption group is a cancer case?
+
+<blockquote>
+Answer:
+
+<code>highest_alcohol_group <- esoph[esoph[,'alcgp'] == '120+',]
+
+sum(highest_alcohol_group[,'ncases']) / (sum(highest_alcohol_group[,'ncases']) + sum(highest_alcohol_group[,'ncontrols']))
+\# 0.4017857
+</code>
+</blockquote>
+
+#### What is the probability that a subject in the lowest alcohol consumption group is a cancer case?
+
+<blockquote>
+Answer:
+
+<code>lowest_alcohol_group <- esoph[esoph[,'alcgp'] == '0-39g/day',]
+
+sum(lowest_alcohol_group[,'ncases']) / (sum(lowest_alcohol_group[,'ncases']) + sum(lowest_alcohol_group[,'ncontrols']))
+\# 0.06531532
+</code>
+</blockquote>
+
+#### Given that a person is a case, what is the probability that they smoke 10g or more a day?
+
+<blockquote>
+Answer:
+
+<code>smoke_more_than_10 <- esoph[esoph[,'tobgp'] != '0-9g/day',]
+
+sum(smoke_more_than_10[,'ncases']) / sum(esoph[,'ncases'])
+\# 0.61
+</code>
+</blockquote>
+
+#### Given that a person is a control, what is the probability that they smoke 10g or more a day?
+
+<blockquote>
+Answer:
+
+<code>smoke_more_than_10 <- esoph[esoph[,'tobgp'] != '0-9g/day',]
+
+sum(smoke_more_than_10[,'ncontrols']) / sum(esoph[,'ncontrols'])
+\# 0.4615385
+</code>
+</blockquote>
+
+
+### Esophageal cancer and alcohol/tobacco use, part 2
+
+#### For cases, what is the probability of being in the highest alcohol group?
+
+<blockquote>
+Answer:
+
+<code>highest_alcohol_group <- esoph[esoph[,'alcgp'] == '120+',]
+
+sum(highest_alcohol_group[,'ncases']) / sum(esoph[,'ncases'])
+\# 0.225
+</code>
+</blockquote>
+
+#### For cases, what is the probability of being in the highest tobacco group?
+
+<blockquote>
+Answer:
+
+<code>highest_tobacco_group <- esoph[esoph[,'tobgp'] == '30+',]
+
+sum(highest_tobacco_group[,'ncases']) / sum(esoph[,'ncases'])
+\# 0.155
+</code>
+</blockquote>
+
+#### For cases, what is the probability of being in the highest alcohol group and the highest tobacco group?
+
+<blockquote>
+Answer:
+
+<code>highest_tobacco_group <- esoph[esoph[,'tobgp'] == '30+',]
+
+pr_a = sum(highest_tobacco_group[,'ncases']) / sum(esoph[,'ncases'])
+
+highest_alcohol_among_highest_tobacco <- highest_tobacco_group[highest_tobacco_group[, 'alcgp'] == '120+',]
+
+pr_a_and_b = sum(highest_alcohol_among_highest_tobacco[,'ncases']) / sum(esoph[,'ncases'])
+\# 0.05
+</code>
+</blockquote>
+
+#### For cases, what is the probability of being in the highest alcohol group or the highest tobacco group?
+
+<blockquote>
+Answer:
+
+<code>highest_tobacco_group <- esoph[esoph[,'tobgp'] == '30+',]
+highest_alcohol_group <- esoph[esoph[,'alcgp'] == '120+',]
+
+pr_a = sum(highest_tobacco_group[,'ncases']) / sum(esoph[,'ncases'])
+pr_b = sum(highest_alcohol_group[,'ncases']) / sum(esoph[,'ncases'])
+
+highest_alcohol_among_highest_tobacco <- highest_tobacco_group[highest_tobacco_group[, 'alcgp'] == '120+',]
+pr_a_and_b = sum(highest_alcohol_among_highest_tobacco[,'ncases']) / sum(esoph[,'ncases'])
+
+pr_a+pr_b - pr_a_and_b
+\# 0.33
+</code>
+</blockquote>
+
+#### For controls, what is the probability of being in the highest alcohol group?
+
+<blockquote>
+Answer:
+
+highest_alcohol_group <- esoph[esoph[,'alcgp'] == '120+',]
+
+sum(highest_alcohol_group[,'ncontrols']) / sum(esoph[,'ncontrols'])
+\# 0.06871795
+</code>
+</blockquote>
+
+#### How many times more likely are cases than controls to be in the highest alcohol group?
+
+<blockquote>
+Answer:
+
+<code>highest_alcohol_group <- esoph[esoph[,'alcgp'] == '120+',]
+
+ncontrols_highest_alcohol <- sum(highest_alcohol_group[,'ncontrols']) / sum(esoph[,'ncontrols'])
+ncases_highest_alcohol <- sum(highest_alcohol_group[,'ncases']) / sum(esoph[,'ncases'])
+
+ncases_highest_alcohol / ncontrols_highest_alcohol
+\ #3.274254
+</code>
+</blockquote>
+
+#### For controls, what is the probability of being in the highest tobacco group?
+
+<blockquote>
+Answer:
+
+<code>highest_tobacco_group <- esoph[esoph[,'tobgp'] == '30+',]
+
+highest_tobacco_group_pr <- sum(highest_tobacco_group[,'ncontrols']) / sum(esoph[,'ncontrols'])
+
+highest_tobacco_group_pr
+\# 0.08410256
+</code>
+</blockquote>
+
+#### For controls, what is the probability of being in the highest alcohol group and the highest tobacco group?
+
+<blockquote>
+Answer:
+
+<code>highest_tobacco_group <- esoph[esoph[,'tobgp'] == '30+',]
+
+pr_a = sum(highest_tobacco_group[,'ncontrols']) / sum(esoph[,'ncontrols'])
+
+highest_alcohol_among_highest_tobacco <- highest_tobacco_group[highest_tobacco_group[, 'alcgp'] == '120+',]
+
+pr_a_and_b = sum(highest_alcohol_among_highest_tobacco[,'ncontrols']) / sum(esoph[,'ncontrols'])
+
+pr_a_and_b
+\# 0.01333333
+</code>
+</blockquote>
+
+#### For controls, what is the probability of being in the highest alcohol group or the highest tobacco group?
+
+<blockquote>
+Answer:
+
+<code>highest_tobacco_group <- esoph[esoph[,'tobgp'] == '30+',]
+highest_alcohol_group <- esoph[esoph[,'alcgp'] == '120+',]
+
+pr_a = sum(highest_tobacco_group[,'ncontrols']) / sum(esoph[,'ncontrols'])
+pr_b = sum(highest_alcohol_group[,'ncontrols']) / sum(esoph[,'ncontrols'])
+
+highest_alcohol_among_highest_tobacco <- highest_tobacco_group[highest_tobacco_group[, 'alcgp'] == '120+',]
+pr_a_and_b = sum(highest_alcohol_among_highest_tobacco[,'ncontrols']) / sum(esoph[,'ncontrols'])
+
+pr_a+pr_b - pr_a_and_b
+\# 0.1394872
+</code>
+</blockquote>
+
+
+#### How many times more likely are cases than controls to be in the highest alcohol group or the highest tobacco group?
+
+<blockquote>
+Answer:
+
+<code>highest_tobacco_group <- esoph[esoph[,'tobgp'] == '30+',]
+highest_alcohol_group <- esoph[esoph[,'alcgp'] == '120+',]
+
+pr_a_controls = sum(highest_tobacco_group[,'ncontrols']) / sum(esoph[,'ncontrols'])
+pr_b_controls = sum(highest_alcohol_group[,'ncontrols']) / sum(esoph[,'ncontrols'])
+
+pr_a_cases = sum(highest_tobacco_group[,'ncases']) / sum(esoph[,'ncases'])
+pr_b_cases = sum(highest_alcohol_group[,'ncases']) / sum(esoph[,'ncases'])
+
+highest_alcohol_among_highest_tobacco <- highest_tobacco_group[highest_tobacco_group[, 'alcgp'] == '120+',]
+
+pr_a_and_b_controls = sum(highest_alcohol_among_highest_tobacco[,'ncontrols']) / sum(esoph[,'ncontrols'])
+pr_a_and_b_cases = sum(highest_alcohol_among_highest_tobacco[,'ncases']) / sum(esoph[,'ncases'])
+
+
+pr_cases = pr_a_cases + pr_b_cases - pr_a_and_b_cases
+pr_controls = pr_a_controls + pr_b_controls - pr_a_and_b_controls
+
+pr_cases / pr_controls
+\# 2.365809
+</code>
+</blockquote>
