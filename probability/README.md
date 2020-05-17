@@ -838,3 +838,387 @@ pr_cases / pr_controls
 \# 2.365809
 </code>
 </blockquote>
+
+## Section 2: Continuous probability
+
+### Theory
+
+The cumulative distribution function (CDF) is a distribution function for continuous data `𝑥` that reports the proportion of the data below `𝑎`  for all values of `𝑎` :
+
+```
+𝐹(𝑎)=Pr(𝑥≤𝑎)
+
+```
+
+The CDF is the probability distribution function for continuous variables. For example, to determine the probability that a male student is taller than 70.5 inches given a vector of male heights `𝑥` , we can use the CDF:
+
+```
+Pr(𝑥>70.5)=1−Pr(𝑥≤70.5)=1−𝐹(70.5)
+```
+
+The probability that an observation is in between two values `𝑎,𝑏`  is `𝐹(𝑏)−𝐹(𝑎)`.
+
+The probability of a single value is not defined for a continuous distribution.
+
+The quantity with the most similar interpretation to the probability of a single value is the probability density function  𝑓(𝑥) .
+
+The probability density  𝑓(𝑥)  is defined such that the integral of  𝑓(𝑥)  over a range gives the CDF of that range.
+
+```
+𝐹(𝑎)=Pr(𝑋≤𝑎)=∫𝑎−∞𝑓(𝑥)𝑑𝑥
+```
+
+### Exercises
+
+#### Assume the distribution of female heights is approximated by a normal distribution with a mean of 64 inches and a standard deviation of 3 inches. If we pick a female at random, what is the probability that she is 5 feet or shorter?
+
+<blockquote>
+Answer:
+
+<code>\# Assign a variable 'female_avg' as the average female height.
+female_avg <- 64
+
+\# Assign a variable 'female_sd' as the standard deviation for female heights.
+female_sd <- 3
+
+\# Using variables 'female_avg' and 'female_sd', calculate the probability that a randomly selected female is shorter than 5 feet. Print this value to the console.
+
+pnorm(5*12, female_avg, female_sd)
+\# 0.09121122
+</code>
+</blockquote>
+
+
+#### Assume the distribution of female heights is approximated by a normal distribution with a mean of 64 inches and a standard deviation of 3 inches. If we pick a female at random, what is the probability that she is 6 feet or taller?
+
+<blockquote>
+Answer:
+
+<code>\# Assign a variable 'female_avg' as the average female height.
+female_avg <- 64
+
+\# Assign a variable 'female_sd' as the standard deviation for female heights.
+female_sd <- 3
+
+\# Using variables 'female_avg' and 'female_sd', calculate the probability that a randomly selected female is 6 feet or taller. Print this value to the console.
+1 - pnorm(6*12, female_avg, female_sd)
+\# 0.003830381
+</code>
+</blockquote>
+
+
+#### Assume the distribution of female heights is approximated by a normal distribution with a mean of 64 inches and a standard deviation of 3 inches. If we pick a female at random, what is the probability that she is between 61 and 67 inches?
+
+<blockquote>
+Answer:
+
+<code>\# Assign a variable 'female_avg' as the average female height.
+female_avg <- 64
+
+\# Assign a variable 'female_sd' as the standard deviation for female heights.
+female_sd <- 3
+
+\# Using variables 'female_avg' and 'female_sd', calculate the probability that a randomly selected female is between the desired height range. Print this value to the console.
+
+pnorm(67, female_avg, female_sd) - pnorm(61, female_avg, female_sd)
+\# 0.6826895
+</code>
+</blockquote>
+
+#### Repeat the previous exercise, but convert everything to centimeters. That is, multiply every height, including the standard deviation, by 2.54. What is the answer now?
+
+<blockquote>
+Answer:
+
+<code>\# Assign a variable 'female_avg' as the average female height. Convert this value to centimeters.
+female_avg <- 64*2.54
+
+\# Assign a variable 'female_sd' as the standard deviation for female heights. Convert this value to centimeters.
+female_sd <- 3*2.54
+
+\# Using variables 'female_avg' and 'female_sd', calculate the probability that a randomly selected female is between the desired height range. Print this value to the console.
+
+pnorm(67*2.54, female_avg, female_sd) - pnorm(61*2.54, female_avg, female_sd)
+\# 0.6826895
+</code>
+</blockquote>
+
+#### Compute the probability that the height of a randomly chosen female is within 1 SD from the average height.
+
+<blockquote>
+Answer:
+
+<code>\# Assign a variable 'female_avg' as the average female height.
+female_avg <- 64
+
+\# Assign a variable 'female_sd' as the standard deviation for female heights.
+female_sd <- 3
+
+\# To a variable named 'taller', assign the value of a height that is one SD taller than average.
+taller <- female_avg + female_sd
+
+\# To a variable named 'shorter', assign the value of a height that is one SD shorter than average.
+shorter <- female_avg - female_sd
+
+\# Calculate the probability that a randomly selected female is between the desired height range. Print this value to the console.
+pnorm(taller, female_avg, female_sd) - pnorm(shorter, female_avg, female_sd)
+\# 0.6826895
+</code>
+</blockquote>
+
+#### Imagine the distribution of male adults is approximately normal with an average of 69 inches and a standard deviation of 3 inches. How tall is a male in the 99th percentile?
+
+<blockquote>
+Answer:
+
+<code>\# Assign a variable 'male_avg' as the average male height.
+male_avg <- 69
+
+\# Assign a variable 'male_sd' as the standard deviation for male heights.
+male_sd <- 3
+
+\# Determine the height of a man in the 99th percentile of the distribution.
+qnorm(0.99, male_avg, male_sd)
+</code>
+</blockquote>
+
+#### The distribution of IQ scores is approximately normally distributed. The average is 100 and the standard deviation is 15. Suppose you want to know the distribution of the person with the highest IQ in your school district, where 10,000 people are born each year. Generate 10,000 IQ scores 1,000 times using a Monte Carlo simulation. Make a histogram of the highest IQ scores.
+
+<blockquote>
+Answer:
+
+<code>\# The variable `B` specifies the number of times we want the simulation to run.
+B <- 1000
+
+\# Use the `set.seed` function to make sure your answer matches the expected result after random number generation.
+set.seed(1)
+
+\# Create an object called `highestIQ` that contains the highest IQ score from each random distribution of 10,000 people.
+dist_values <- 10000
+avg_iq <- 100
+iq_sd <- 15
+highestIQ <- replicate(B, {
+  iqs <- rnorm(10000, avg_iq, iq_sd)
+  max(iqs)
+})
+
+\# Make a histogram of the highest IQ scores.
+\# plot distribution of simulated_heights
+hist(highestIQ)
+</code>
+</blockquote>
+
+## Section 2: Assessment
+
+### ACT scores part 1
+
+The ACT is a standardized college admissions test used in the United States. The four multi-part questions in this assessment all involve simulating some ACT test scores and answering probability questions about them.
+
+For the three year period 2016-2018, ACT standardized test scores were approximately normally distributed with a mean of 20.9 and standard deviation of 5.7. (Real ACT scores are integers between 1 and 36, but we will ignore this detail and use continuous values instead.)
+
+First we'll simulate an ACT test score dataset and answer some questions about it.
+
+Set the seed to 16, then use rnorm() to generate a normal distribution of 10000 tests with a mean of 20.9 and standard deviation of 5.7. Save these values as act_scores. You'll be using this dataset throughout these four multi-part questions.
+
+#### What is the mean of act_scores?
+
+<blockquote>
+Answer:
+
+<code>set.seed(16)
+
+act_scores <- rnorm(10000, 20.9, 5.7)
+
+mean(act_scores)
+\# 20.84012
+</code>
+</blockquote>
+
+#### What is the standard deviation of act_scores?
+
+<blockquote>
+Answer:
+
+<code>set.seed(16)
+
+act_scores <- rnorm(10000, 20.9, 5.7)
+
+sd(act_scores)
+\# 5.675237
+</code>
+</blockquote>
+
+#### A perfect score is 36 or greater (the maximum reported score is 36). In act_scores, how many perfect scores are there out of 10,000 simulated tests?
+
+<blockquote>
+Answer:
+
+<code>set.seed(16)
+
+act_scores <- rnorm(10000, 20.9, 5.7)
+act_scores
+
+length(which(act_scores >= 36))
+\# 41
+</code>
+</blockquote>
+
+#### In act_scores, what is the probability of an ACT score greater than 30?
+
+<blockquote>
+Answer:
+
+<code>set.seed(16)
+
+act_scores <- rnorm(10000, 20.9, 5.7)
+
+length(which(act_scores >= 30)) / length(act_scores)
+\# 0.0527
+</code>
+</blockquote>
+
+#### In act_scores, what is the probability of an ACT score less than or equal to 10?
+
+<blockquote>
+Answer:
+
+<code>set.seed(16)
+
+act_scores <- rnorm(10000, 20.9, 5.7)
+
+length(which(act_scores <= 10)) / length(act_scores)
+\# 0.0282
+</code>
+</blockquote>
+
+### Set x equal to the sequence of integers 1 to 36. Use dnorm to determine the value of the probability density function over x given a mean of 20.9 and standard deviation of 5.7; save the result as f_x. Plot x against f_x. How does the plot look like?
+
+<blockquote>
+Answer:
+
+<code>x <- seq(1, 36)
+
+f_x <- dnorm(x, 20.9, 5.7)
+
+plot(x, f_x)
+</code>
+
+<img src="/section_2_plot_1.png" alt="Plot image 1" />
+</blockquote>
+
+### ACT scores part 2
+
+In this 3-part question, you will convert raw ACT scores to Z-scores and answer some questions about them.
+
+Convert act_scores to Z-scores. Recall from Data Visualization (the second course in this series) that to standardize values (convert values into Z-scores, that is, values distributed with a mean of 0 and standard deviation of 1), you must subtract the mean and then divide by the standard deviation. Use the mean and standard deviation of act_scores, not the original values used to generate random test scores.
+
+#### What is the probability of a Z-score greater than 2 (2 standard deviations above the mean)?
+
+<blockquote>
+Answer:
+
+<code>set.seed(16)
+
+act_scores <- rnorm(10000, 20.9, 5.7)
+
+z_scores = (act_scores - mean(act_scores)) / sd(act_scores)
+
+length(which(z_scores > 2)) / length(z_scores)
+\# 0.0233
+</code>
+</blockquote>
+
+#### What ACT score value corresponds to 2 standard deviations above the mean (Z = 2)?
+
+<blockquote>
+Answer:
+
+<code>set.seed(16)
+
+act_scores <- rnorm(10000, 20.9, 5.7)
+
+mean(act_scores)+sd(act_scores)\*2
+\# 32.1906
+</code>
+</blockquote>
+
+#### A Z-score of 2 corresponds roughly to the 97.5th percentile. Use qnorm() to determine the 97.5th percentile of normally distributed data with the mean and standard deviation observed in act_scores. What is the 97.5th percentile of act_scores?
+
+<blockquote>
+Answer:
+
+<code>set.seet(16)
+
+qnorm(0.975, 20.9, 5.7)
+\# 32.07179
+</code>
+</blockquote>
+
+#### What is the minimum integer score such that the probability of that score or lower is at least .95?
+
+<blockquote>
+Answer:
+
+<code>set.seed(16)
+
+act_scores <- rnorm(10000, 20.9, 5.7)
+
+ceiling(qnorm(0.95, mean(act_scores), sd(act_scores)))
+\# 31
+</code>
+</blockquote>
+
+#### Use qnorm() to determine the expected 95th percentile, the value for which the probability of receiving that score or lower is 0.95, given a mean score of 20.9 and standard deviation of 5.7. What is the expected 95th percentile of ACT scores?
+
+<blockquote>
+Answer:
+
+<code>set.seed(16)
+
+act_scores <- rnorm(10000, 20.9, 5.7)
+
+qnorm(0.95, 20.9, 5.7)
+\# 30.27567
+</code>
+</blockquote>
+
+#### As discussed in the Data Visualization course, we can use quantile() to determine sample quantiles from the data. Make a vector containing the quantiles for p <- seq(0.01, 0.99, 0.01), the 1st through 99th percentiles of the act_scores data. Save these as sample_quantiles. In what percentile is a score of 26?
+
+
+<blockquote>
+Answer:
+
+<code>set.seed(16)
+
+act_scores <- rnorm(10000, 20.9, 5.7)
+
+p <- seq(0.01, 0.99, 0.01)
+
+sample_quantiles <- quantile(act_scores, p)
+
+sample_quantiles
+\# 82
+</code>
+</blockquote>
+
+
+#### Make a corresponding set of theoretical quantiles using qnorm() over the interval p <- seq(0.01, 0.99, 0.01) with mean 20.9 and standard deviation 5.7. Save these as theoretical_quantiles. Make a QQ-plot graphing sample_quantiles on the y-axis versus theoretical_quantiles on the x-axis. What does the graph look like?
+
+<blockquote>
+Answer:
+
+<code>set.seed(16)
+
+act_scores <- rnorm(10000, 20.9, 5.7)
+
+p <- seq(0.01, 0.99, 0.01)
+
+sample_quantiles <- quantile(act_scores, p)
+
+theoretical_quantiles <- quantile(qnorm(p, 20.9, 6.7), p)
+
+qqplot(theoretical_quantiles, sample_quantiles)
+</code>
+
+<img src="/section_2_plot_2.png" alt="Plot image 2" />
+</blockquote>
